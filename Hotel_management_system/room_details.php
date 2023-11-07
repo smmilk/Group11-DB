@@ -19,35 +19,22 @@
 		<div class="continer">
 			<div class="row">
 				<div class="col-sm-2"></div>
-				<div class="col-sm-7">
+				<div class="col-sm-7" style="padding-bottom:30px;">
 					
 <?php 
 include('connection.php');
 $room_id=$_GET['room_id'];
-$sql=mysqli_query($con,"select * from rooms where room_id='$room_id' ");
+$sql=mysqli_query($con,"select * from Rooms where room_id='$room_id' ");
 $res=mysqli_fetch_assoc($sql);
 ?>
-
+    <img src="image/rooms/<?php echo $res['image']; ?>"style="width:850px;">
 		<h2 class="Ac_Room_Text"><?php echo $res['type']; ?></h2>
-    <h3 class="Ac_Room_Text"><?php echo $res['price']; ?></h3>
+    <h3 class="Ac_Room_Text">$<?php echo $res['price']; ?> per night</h3></br>
 		<p class="text-justify">
       <?php echo $res['details']; ?>
 </p>
     <div class="row">
       <h2>Ratings & Feedback</h2>
-      <?php
-            include('connection.php');
-            $room_id=$_GET['room_id'];
-            $sql3=mysqli_query($con,"select type from rooms where room_id='$room_id' ");
-            $result3 = mysqli_fetch_array($sql3);
-            $sql2=mysqli_query($con,"select * from feedback where room_type='$result3' ");
-            while($result2= mysqli_fetch_assoc($sql2))
-           {
-            if (isset($result2)) 
-            echo $result2;
-            ?>
-            
-        <?php } ?>
         
     </div>
     <div class="row">
@@ -59,20 +46,20 @@ $res=mysqli_fetch_assoc($sql);
 				<div class="col-sm-3">
 					<div class="panel panel-primary">
 					<div class="panel-heading">
-						<h4 align="center">Room Type</h4>
+						<h4 align="center">Room Types</h4>
 					</div><br>
 					<div class="panel-body-right text-center">
-    <!--Fatch Mysql Database Select Query Room Details -->
+    <!-- Fetch Mysql Database Select Query Room Details -->
 						<?php
             include('connection.php');
-            $sql1=mysqli_query($con,"select * from rooms");
+            $sql1=mysqli_query($con,"select * from Rooms");
            while($result1= mysqli_fetch_assoc($sql1))
            {
 
             ?>
             <a href="room_details.php?room_id=<?php echo $result1['room_id']; ?>"><?php echo $result1['type']; ?></a><hr>
             <?php } ?>
-    <!--Fatch Mysql Database Select Query Room Details -->
+    <!-- Fetch Mysql Database Select Query Room Details -->
     					
 					</div>
 				</div>

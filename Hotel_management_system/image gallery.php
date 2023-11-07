@@ -21,16 +21,14 @@ include('connection.php');
   <h2 style="padding-bottom: 40px">Image Gallery</h2>
   <div class="row" style="padding-bottom: 100px">
     <?php
-      $sql=mysqli_query($con,"select * from image_gallery");
-      while($gallery=mysqli_fetch_assoc($sql))
-      {
-        $gallery_img=$gallery['image'];
-        $path="image/image gallery/$gallery_img";	
+    $dir_gallery = "image/gallery/";
+    $images = glob($dir_gallery."*.jpg");
+    foreach($images as $image){
     ?>
      <div class="col-md-4">
       <div class="thumbnail">
-        <a href="<?php echo $path; ?>" target="_blank">
-          <img src="<?php echo $path; ?>" style="width:100%;height:160px;">
+        <a href="<?php echo $image; ?>" target="_blank">
+          <img src="<?php echo $image; ?>" style="width:100%;height:160px;">
         </a>
       </div>
     </div> 

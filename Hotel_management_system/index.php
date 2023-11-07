@@ -31,41 +31,15 @@ include('connection.php');
     <!-- Wrapper for slides -->
 
     <div class="carousel-inner" role="listbox">
-      <?php
-		$i=1;
-	  $sql=mysqli_query($con,"select * from slider");
-		while($slider=mysqli_fetch_assoc($sql))
-		{
-		$slider_img=$slider['image'];
-		$slider_cap=$slider['caption'];
-		$path="image/Slider/$slider_img";	
-			if($i==1)
-			{	
-		?>
-	  <div class="item active">
-        <img src="<?php echo $path; ?>" alt="Image">
-        <div class="carousel-caption">
-			<h2><?php echo $slider_cap; ?></h2>
-		</div>      
-      </div>
-		<?php 
-		} 
-		else 
-			{
-			?>	
-		<div class="item">
-        <img src="<?php echo $path; ?>" alt="Image">
-        <div class="carousel-caption">
-        <h2><?php echo $slider_cap; ?></h2>
-		</div>      
-      </div>	
-				
-		<?php	} ?>
-	  
-	  
-		<?php $i++; } ?>
-      
-	  
+      <div class="item active">
+          <img src="image/Slider/img1.jpg" alt="Image">
+      </div>      	
+	  	<div class="item">
+          <img src="image/Slider/img2.jpg" alt="Image">
+		  </div>
+      <div class="item">
+          <img src="image/Slider/img3.jpg" alt="Image">
+		  </div>      
     </div>
 
     
@@ -81,7 +55,7 @@ include('connection.php');
     
 </div> <!--Room Info Start Here-->
 
- <div class="container-fluid"id="red"><!--Id Is Red--> 
+ <div class="container-fluid"id="red" style="padding-top:20px;padding-bottom:50px"><!--Id Is Red--> 
 <div class="container text-center">    
   <h1>Welcome To <font color="#a6e22b;"><b>SIT Hotels</b></font></h1><hr><br>
   <div class="row">
@@ -95,8 +69,8 @@ include('connection.php');
 	?>
 	<div class="col-sm-4">
       <img src="image/rooms/<?php echo $r_res['image']; ?>"class="img-responsive thumbnail"alt="Image"id="img1"> <!--Id Is Img-->
-      <h4 class="Room_Text">[ <?php echo $r_res['type']; ?>]</h4>
-      <p class="text-justify"><?php echo substr($r_res['details'],0,100); ?></p><br>
+      <h4 class="Room_Text"> <?php echo $r_res['type']; ?></h4>
+      <p class="text-justify"><?php echo substr($r_res['details'],0,100); ?>...</p><br>
 	    <a href="room_details.php?room_id=<?php echo $r_res['room_id']; ?>" class="btn btn-danger text-center">Read more</a><br><br>
     </div>
 	<?php } ?>
