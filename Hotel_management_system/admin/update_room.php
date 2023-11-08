@@ -6,7 +6,7 @@ $res=mysqli_fetch_assoc($sql);
 extract($_REQUEST);
 if(isset($update))
 {
-mysqli_query($con,"update rooms set room_no='$rno',type='$type',price='$price',details='$details' where room_id='$id' ");
+mysqli_query($con,"update rooms set type='$type',price='$price',details='$details',available='$avail',quantity='$qty' where room_id='$id' ");
 header('location:dashboard.php?option=rooms');
 }
 
@@ -14,12 +14,6 @@ header('location:dashboard.php?option=rooms');
 
 <form method="post" enctype="multipart/form-data">
 <table class="table table-bordered">
-	
-	<tr>	
-		<th>Room No</th>
-		<td><input type="text"  name="rno" value="<?php echo $res['room_no']; ?>"  class="form-control"/>
-		</td>
-	</tr>
 	
 	<tr>	
 		<th>Room Type</th>
@@ -39,6 +33,17 @@ header('location:dashboard.php?option=rooms');
 		</td>
 	</tr>
 	
+	<tr>	
+		<th>Availability</th>
+		<td><textarea name="avail"  class="form-control"><?php echo $res['available']; ?></textarea>
+		</td>
+	</tr>
+
+	<tr>	
+		<th>Quantity</th>
+		<td><textarea type="number" name="qty"  class="form-control"><?php echo $res['quantity']; ?></textarea>
+		</td>
+	</tr>
 	
 	<tr>
 		<td colspan="2">

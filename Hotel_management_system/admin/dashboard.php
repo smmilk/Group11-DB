@@ -56,8 +56,6 @@ if($admin=="")
             <li><a href="dashboard.php?option=rooms">Room</a></li>
 			<li><a href="dashboard.php?option=booking_details">Booking Details</a></li>
       <li><a href="dashboard.php?option=user_registration">User Registration</a></li>
-			<li><a href="dashboard.php?option=slider">Slider</a></li>
-      <li><a href="dashboard.php?option=image_gallery">Image Gallery</a></li>
           </ul>
           </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -72,18 +70,6 @@ else
 	if($opt=="feedback")
 	{
 	include('feedback.php');	
-	}
-	else if($opt=="slider")
-	{
-	include('slider.php');	
-	}
-	else if($opt=="update_slider")
-	{
-	include('update_slider.php');	
-	}
-	else if($opt=="add_slider")
-	{
-	include('add_slider.php');	
 	}
 	else if($opt=="update_password")
 	{
@@ -116,14 +102,6 @@ else
   else if($opt=="admin_profile")
   {
     include('admin_profile.php');
-  }
-  else if($opt=="image_gallery")
-  {
-    include('image_gallery/image_gallery.php');
-  }
-  else if($opt=="add_gallery")
-  {
-    include('image_gallery/add_gallery.php');
   }
 }
 ?>

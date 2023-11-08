@@ -4,7 +4,7 @@ error_reporting(1);
 extract($_REQUEST);
 if(isset($submit))
 {
-  $sql=mysqli_query($con,"select * from create_account where email='$email' ");
+  $sql=mysqli_query($con,"select * from Account where email='$email' ");
     if(mysqli_num_rows($sql))
     {
      $res=mysqli_fetch_assoc($sql); 
@@ -12,7 +12,7 @@ if(isset($submit))
     }
     else
     {
-    $error= "<h3 style='color:red'>Invalid  details</h3>"; 
+    $error= "<h3 style='color:red'>Invalid details</h3>"; 
     }  
 }
 ?>  

@@ -11,7 +11,7 @@ if(isset($login))
 	}		
 	else
 	{
-	$sql=mysqli_query($con,"select * from admin where username='$eid' && password='$pass' ");
+	$sql=mysqli_query($con,"select * from Account where email='$eid' && password='$pass' && account_id=1");
 		if(mysqli_num_rows($sql))
 		{
 		$_SESSION['admin_logged_in']=$eid;	

@@ -12,11 +12,11 @@ if(isset($login))
 {
   if($eid=="" || $pass=="")
   {
-  $error= "<h4 style='color:red'>fill all details</h4>";  
+  $error= "<h4 style='color:red'>Please fill in all details!</h4>";  
   }   
   else
   {
-  $sql=mysqli_query($con,"select * from create_account where email='$eid' && password='$pass' ");
+  $sql=mysqli_query($con,"select * from Account where email='$eid' && password='$pass' ");
     if(mysqli_num_rows($sql))
     {
     $_SESSION['create_account_logged_in']=$eid;  
@@ -24,7 +24,7 @@ if(isset($login))
     }
     else
     {
-    $error= "<h4 style='color:red'>Invalid login details</h4>"; 
+    $error= "<h4 style='color:red'>Invalid login details, please try again!</h4>"; 
     } 
   }
 }

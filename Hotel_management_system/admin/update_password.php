@@ -1,17 +1,17 @@
 <?php 
 if(isset($update))
 {
-$sql=mysqli_query($con,"select * from admin where username='$admin' and password='$op' ");
+$sql=mysqli_query($con,"select * from Account where email='$admin' and password='$op' ");
 	if(mysqli_num_rows($sql))
 	{
 		if($np==$cp)
 		{
-		mysqli_query($con,"update admin set password='$np' where username='$admin' ");	
+		mysqli_query($con,"update Account set password='$np' where email='$admin' ");	
 		echo "<h3 style='color:blue'>Password updated successfully</h3>";
 		}
 		else
 		{
-			echo "<h3 style='color:red'>New and confirm doesn't match</h3>";
+			echo "<h3 style='color:red'>New Password doesn't match</h3>";
 		}
 	}
 	else
@@ -25,7 +25,7 @@ $sql=mysqli_query($con,"select * from admin where username='$admin' and password
 <table class="table table-bordered table-striped table-hover">
 	<h1>Update Password</h1><hr>
 	<tr style="height:40">
-		<th>Enter Your old Password</th>
+		<th>Enter Your Old Password</th>
 		<td><input type="password" name="op" class="form-control"required/></td>
 	</tr>
 	
@@ -36,7 +36,7 @@ $sql=mysqli_query($con,"select * from admin where username='$admin' and password
 	</tr>
 	
 	<tr>	
-		<th>Enter Your Confirm Password</th>
+		<th>Confirm Your Password</th>
 		<td><input type="password" name="cp" class="form-control"required/>
 		</td>
 	</tr>

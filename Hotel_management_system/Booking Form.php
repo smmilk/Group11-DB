@@ -5,14 +5,14 @@ if($eid=="")
 {
 header('location:Login.php');
 }
-$sql= mysqli_query($con,"select * from create_account where email='$eid' "); 
+$sql= mysqli_query($con,"select * from Account where email='$eid' "); 
 $result=mysqli_fetch_assoc($sql);
 //print_r($result);
 extract($_REQUEST);
 error_reporting(1);
 if(isset($savedata))
 {
-  $sql= mysqli_query($con,"select * from room_booking_details where email='$email' and room_type='$room_type' ");
+  $sql= mysqli_query($con,"select * from Booking where email='$email' and room_type='$room_type' ");
   if(mysqli_num_rows($sql)) 
   {
   $msg= "<h1 style='color:red'>You have already booked this room</h1>";    
@@ -96,15 +96,6 @@ if(isset($savedata))
         </div>
         </div>
 
-        <div class="form-group">
-          <div class="row">
-           <div class="control-label col-sm-4"><h4>Address:</h4></div>
-          <div class="col-sm-8">
-              <textarea name="address" class="form-control" readonly="readonly" placeholder="Enter Your Address"required><?php echo $result['address'];  ?></textarea>
-          </div>
-        </div>
-        </div>
-
          <div class="form-group">
           <div class="row">
            <div class="control-label col-sm-4"><h4>Country:</h4></div>
@@ -153,21 +144,11 @@ if(isset($savedata))
                 </div> 
               </div>
             </div>
-            <div class="form-group">
-              <div class="row">
-                <label class="control-label col-sm-5"><h4 id="top">Occupancy :</h4></label>
-                <div class="col-sm-7">
-                  <div class="radio-inline"><input type="radio" value="Single" name="Occupancy"required >Single</div>
-                  <div class="radio-inline"><input type="radio" value="Coupe" name="Occupancy" required>Coupe</div>
-                  <div class="radio-inline"><input type="radio" value="Family" name="Occupancy" required>Family</div>
-                  <div class="radio-inline"><input type="radio" value="Booking for someone" name="Occupancy" required>Booking for someone</div>
-                </div> 
-              </div>
-            </div>
             <input type="button"value="Next" id="toggleBtn"onClick="unhide()" class="btn btn-danger"required/>
           </div>
           </div>
           <div class="row" id="paymentdiv" style="padding-top:60px;padding-bottom:50px;display:none;">
+          <h1>Payment due:</h1></br>
             <div class="col-sm-6">
              <div class="form-group">
                 <div class="row">
@@ -223,7 +204,7 @@ if(isset($savedata))
                   </div> 
                 </div>
               </div>
-              <input type="submit"value="Proceed to Payment" name="savedata" class="btn btn-danger"required/>
+              <input type="submit"value="Proceed to Pay" name="savedata" class="btn btn-danger"required/>
             </div> 
           </form><br>
         </div>

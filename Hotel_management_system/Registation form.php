@@ -3,18 +3,18 @@ include('connection.php');
 extract($_REQUEST);
 if(isset($save))
 {
-  $sql= mysqli_query($con,"select * from create_account where email='$email' ");
+  $sql= mysqli_query($con,"select * from Account where email='$email' ");
   if(mysqli_num_rows($sql))
   {
-  $msg= "<h1 style='color:red'> account already exists</h1>";    
+  $msg= "<h1 style='color:red'>Account already exists</h1>";    
   }
   else
   {
 
-      $sql="insert into create_account(name,email,password,mobile,address,gender,country,pictrure) values('$fname','$email','$Passw','$mobi','$addr','$gend','$countr','$pict')";
+      $sql="insert into Account(name,email,password,mobile,gender,country) values('$fname','$email','$Passw','$mobi','$gend','$countr')";
    if(mysqli_query($con,$sql))
    {
-   $msg= "<h1 style='color:green'>Data Saved Successfully</h1>"; 
+   $msg= "<h1 style='color:green'>Account created successfully!</h1>"; 
    header('location:Login.php'); 
    }
   }
@@ -75,13 +75,6 @@ include('Menu Bar.php');
         </div>
 
         <div class="form-group">
-            <div class="control-label col-sm-5"><h4>Address:</h4></div>
-          <div class="col-sm-7">
-              <textarea  name="addr" class="form-control"required></textarea>
-          </div>
-        </div>
-
-        <div class="form-group">
             <div class="control-label col-sm-5"><h4 id="top">Gender:</h4></div>
           <div class="col-sm-7">
               <input type="radio" name="gend"value="male"required><b>Male</b>&emsp;
@@ -106,10 +99,7 @@ include('Menu Bar.php');
         </div>
 
         <div class="form-group">
-            <div class="control-label col-sm-5"><h4 id="top">Profile Picture:</h4></div>
-          <div class="col-sm-7">
-              <input type="file" name="pict"accept="image/*">
-          </div>
+            <div class="control-label col-sm-5"></div>
           <div class="row">
             <div class="col-sm-6"style="text-align:right;"><br>
             <input type="submit" value="Submit" name="save"class="btn btn-success btn-group-justified"required style="color:#000;font-family: 'Baloo Bhai', cursive;height:40px;"/>

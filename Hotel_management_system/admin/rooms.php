@@ -13,12 +13,13 @@
 	<td colspan="8"><a href="dashboard.php?option=add_rooms" class="btn btn-primary">Add New Rooms</a></td>
 	</tr>
 	<tr style="height:40">
-		<th>Sr No</th>
+		<th>ID</th>
 		<th>Image</th>
-		<th>Room No</th>
-		<th>TYpe</th>
+		<th>Room Type</th>
 		<th>Price</th>
 		<th>Details</th>
+		<th>Availability</th>
+		<th>Quantity</th>
 		<th>Update</th>
 		<th>Delete</th>
 	</tr>
@@ -34,10 +35,11 @@ $path="../image/rooms/$img";
 <tr>
 		<td><?php echo $i;$i++; ?></td>
 		<td><img src="<?php echo $path;?>" width="50" height="50"/></td>
-		<td><?php echo $res['room_no']; ?></td>
 		<td><?php echo $res['type']; ?></td>
 		<td><?php echo $res['price']; ?></td>
 		<td><?php echo $res['details']; ?></td>
+		<td><?php echo $res['available']; ?></td>
+		<td><?php echo $res['quantity']; ?></td>
 
 		<td><a href="dashboard.php?option=update_room&id=<?php echo $id; ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
 
