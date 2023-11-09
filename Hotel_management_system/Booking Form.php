@@ -7,6 +7,7 @@ header('location:Login.php');
 }
 $sql= mysqli_query($con,"select * from Account where email='$eid' "); 
 $result=mysqli_fetch_assoc($sql);
+$sqltype=mysqli_query($con,"select * from rooms");
 //print_r($result);
 extract($_REQUEST);
 error_reporting(1);
@@ -48,6 +49,8 @@ if(isset($savedata))
       document.getElementsByName("cdate")[0].setAttribute('min', today);
       document.getElementsByName("codate")[0].setAttribute('min', today);
     }
+  </script>
+  <script>
     function toggler(divId) { 
             $("#" + divId).toggle(); 
         } 
@@ -62,155 +65,84 @@ if(isset($savedata))
   include('Menu Bar.php');
   ?>
 <div class="container-fluid text-center"id="primary"style="padding-top: 50px;padding-bottom: 50px;"><!--Primary Id-->
-  <h1>Booking Form</h1><br>
+  <h1>Booking Form</h1>
   <div class="container">
     <div class="row">
       <?php echo @$msg; ?>
-      <!--Form Containe Start Here-->
-     <form class="form-horizontal" method="post">
-       <div class="col-sm-6">
-         <div class="form-group">
-           <div class="row">
-              <div class="control-label col-sm-4"><h4>Name:</h4></div>
-                <div class="col-sm-8">
-                 <input type="text" value="<?php echo $result['name']; ?>" class="form-control" name="name" placeholder="Enter Your Name"required>
+      <!--Booking Form Starts Here-->
+      <form class="form-horizontal" method="post">
+        <div class="col-sm-6">
+          <div class="control-label col-sm-4">
+            <h4>Name:</h4>
+            <h4>Email:</h4>
+            <h4>Mobile:</h4>
+            <h4>Country:</h4>
           </div>
-        </div>
-      </div>
-
-        <div class="form-group">
-          <div class="row">
-           <div class="control-label col-sm-4"><h4>Email:</h4></div>
           <div class="col-sm-8">
-              <input type="email" value="<?php echo $result['email']; ?>" readonly="readonly" class="form-control" name="email"  placeholder="Enter Your Email"required/>
+            <input type="text" value="<?php echo $result['name']; ?>" class="form-control" name="name" placeholder="Enter Your Name"required>
+            <input type="email" value="<?php echo $result['email']; ?>" readonly="readonly" class="form-control" name="email"  placeholder="Enter Your Email"required/>          
+            <input type="number" value="<?php echo $result['mobile']; ?>" class="form-control" name="phone" placeholder="Enter Your Phone Number"required>
+            <input type="text" class="form-control" readonly="readonly"  value="<?php echo $result['country']; ?>" name="country" placeholder="Enter Your Country Name"required>
           </div>
         </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-           <div class="control-label col-sm-4"><h4>Mobile:</h4></div>
+        <div class="col-sm-6">
+          <div class="control-label col-sm-4">
+            <h4>Room Type:</h4>
+            <h4>Check In Date:</h4>
+            <h4>Check Out Date:</h4>
+          </div>
           <div class="col-sm-8">
-              <input type="number" value="<?php echo $result['mobile']; ?>" class="form-control" name="phone" placeholder="Enter Your Phone Number"required>
+            <select class="form-control" name="room_type"required>
+              <?php while ($restype = mysqli_fetch_array($sqltype,MYSQLI_ASSOC)):;?>
+              <option value="<?php echo $restype["type"];?>"><?php echo $restype["type"];?></option>
+              <?php endwhile; ?>
+            </select>
+            <input type="date" name="cdate" class="form-control" onkeydown="return false" required>
+            <input type="date" name="codate" class="form-control" onkeydown="return false" required>
+            <input type="submit"value="Next" id="toggleBtn"onClick="unhide()" class="btn btn-danger"required/>
           </div>
         </div>
-        </div>
-
-         <div class="form-group">
-          <div class="row">
-           <div class="control-label col-sm-4"><h4>Country:</h4></div>
+      </form>
+    </div>
+    <div class="row">
+      <!--Payment Form Starts Here-->
+      <form class="form-horizontal" method="post" id="payment-form">
+        <h1>Payment Due: $</h1>
+        <div class="col-sm-6">
+          <div class="control-label col-sm-4">
+            <h4>Accepted Cards:</h4>
+            <h4>Name on Card:</h4>
+            <h4>Credit Card No.:</h4>
+          </div>
           <div class="col-sm-8">
-              <input type="text" class="form-control" readonly="readonly"  value="<?php echo $result['country']; ?>" name="country" placeholder="Enter Your Country Name"required>
+            <i class="fa fa-cc-visa" style="color:navy;font-size:36px"></i>
+            <i class="fa fa-cc-amex" style="color:blue;font-size:36px"></i>
+            <i class="fa fa-cc-mastercard" style="color:red;font-size:36px"></i>
+            <i class="fa fa-cc-discover" style="font-size:36px"></i>
+            <input type="text" name="nameoncard" class="form-control"required>
+            <input type="number" name="ccnumber" class="form-control"required>
           </div>
         </div>
-        </div>
-        </div>
-           <div class="col-sm-6">
-            <div class="form-group">
-              <div class="row">
-                <div class="control-label col-sm-5"><h4>Room Type:</h4></div>
-                  <div class="col-sm-7">
-                <select class="form-control" name="room_type"required>
-                  <option>Deluxe Room</option>
-                  <option>Luxurious Suite</option>
-                  <option>Standard Room</option>
-                  <option>Suite Room</option>
-                  <option>Twin Deluxe Room</option>
-               </select>
-              </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row">
-                <div class="control-label col-sm-5"><h4>Check In Date:</h4></div>
-                  <div class="col-sm-7">
-                  <input type="date" name="cdate" class="form-control" required>
-                  </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row">
-                 <div class="control-label col-sm-5"><h4>Check In Time:</h4></div>
-                   <div class="col-sm-7">
-                    <input type="time" name="ctime" class="form-control"required>
-                  </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row">
-                <div class="control-label col-sm-5"><h4>Check Out Date:</h4></div>
-                <div class="col-sm-7">
-                  <input type="date" name="codate" class="form-control"required>
-                </div> 
-              </div>
-            </div>
-            <input type="button"value="Next" id="toggleBtn"onClick="unhide()" class="btn btn-danger"required/>
-          </div>
-          </div>
-          <div class="row" id="paymentdiv" style="padding-top:60px;padding-bottom:50px;display:none;">
-          <h1>Payment due:</h1></br>
-            <div class="col-sm-6">
-             <div class="form-group">
-                <div class="row">
-                  <div class="control-label col-sm-5"><h4>Accepted Cards:</h4></div>
-                  <div class="col-sm-7">
-                    <i class="fa fa-cc-visa" style="color:navy;font-size:36px"></i>
-                    <i class="fa fa-cc-amex" style="color:blue;font-size:36px"></i>
-                    <i class="fa fa-cc-mastercard" style="color:red;font-size:36px"></i>
-                    <i class="fa fa-cc-discover" style="font-size:36px"></i>
-                  </div> 
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="control-label col-sm-5"><h4>Name on Card:</h4></div>
-                  <div class="col-sm-7">
-                    <input type="text" name="nameoncard" class="form-control"required>
-                  </div> 
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="control-label col-sm-5"><h4>Credit Card No.:</h4></div>
-                  <div class="col-sm-7">
-                    <input type="number" name="ccnumber" class="form-control"required>
-                  </div> 
-                </div>
-              </div>
-            </div>
 
-            <div class="col-sm-6">
-              <div class="form-group">
-                <div class="row">
-                  <div class="control-label col-sm-5"><h4>Exp Month:</h4></div>
-                  <div class="col-sm-7">
-                    <input type="text" name="expmonth" class="form-control"required>
-                  </div> 
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="control-label col-sm-5"><h4>Exp Year:</h4></div>
-                  <div class="col-sm-7">
-                    <input type="text" name="expyear" class="form-control"required>
-                  </div> 
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                  <div class="control-label col-sm-5"><h4>CVV:</h4></div>
-                  <div class="col-sm-7">
-                    <input type="number" name="cvv" class="form-control"required>
-                  </div> 
-                </div>
-              </div>
-              <input type="submit"value="Proceed to Pay" name="savedata" class="btn btn-danger"required/>
-            </div> 
-          </form><br>
+        <div class="col-sm-6">
+          <div class="control-label col-sm-4">
+            <h4>Exp Month:</h4>
+            <h4>Exp Year:</h4>
+            <h4>CVV:</h4>
+          </div>
+          <div class="col-sm-8">  
+            <input type="text" name="expmonth" class="form-control"required>
+            <input type="text" name="expyear" class="form-control"required>
+            <input type="number" name="cvv" class="form-control"required>
+            <input type="button"value="Back" class="btn btn-danger" required/>
+            <input type="submit"value="Proceed to Pay" name="savedata" class="btn btn-danger"required/>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
+</div>
 <?php
 include('Footer.php')
 ?>
