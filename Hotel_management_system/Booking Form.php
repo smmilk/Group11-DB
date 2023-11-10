@@ -21,9 +21,8 @@ if(isset($savedata))
   else
   {
 
-   $sql="insert into room_booking_details(name,email,phone,address,country,room_type,Occupancy,check_in_date,check_in_time,check_out_date) 
-  values('$name','$email','$phone','$address','$country',
-  '$room_type','$Occupancy','$cdate','$ctime','$codate')";
+   $sql="insert into booking(account_id,room_id,check_in_date,check_out_date) 
+  values('','','$ctime','$codate')";
    if(mysqli_query($con,$sql))
    {
    $msg= "<h1 style='color:blue'>You have Successfully booked this room</h1><h2><a href='order.php'>View </a></h2>"; 
@@ -50,27 +49,18 @@ if(isset($savedata))
       document.getElementsByName("codate")[0].setAttribute('min', today);
     }
   </script>
-  <script>
-    function toggler(divId) { 
-            $("#" + divId).toggle(); 
-        } 
-    function unhide() { 
-            toggler('paymentdiv'); 
-            toggler('toggleBtn'); 
-        } 
-  </script> 
 </head>
 <body style="margin-top:50px;">
   <?php
   include('Menu Bar.php');
   ?>
 <div class="container-fluid text-center"id="primary"style="padding-top: 50px;padding-bottom: 50px;"><!--Primary Id-->
-  <h1>Booking Form</h1>
+  <h1>Booking Form</h1></br>
   <div class="container">
     <div class="row">
       <?php echo @$msg; ?>
       <!--Booking Form Starts Here-->
-      <form class="form-horizontal" method="post">
+      <form class="form-horizontal" method="post" id="booking-form">
         <div class="col-sm-6">
           <div class="control-label col-sm-4">
             <h4>Name:</h4>
@@ -79,10 +69,10 @@ if(isset($savedata))
             <h4>Country:</h4>
           </div>
           <div class="col-sm-8">
-            <input type="text" value="<?php echo $result['name']; ?>" class="form-control" name="name" placeholder="Enter Your Name"required>
-            <input type="email" value="<?php echo $result['email']; ?>" readonly="readonly" class="form-control" name="email"  placeholder="Enter Your Email"required/>          
-            <input type="number" value="<?php echo $result['mobile']; ?>" class="form-control" name="phone" placeholder="Enter Your Phone Number"required>
-            <input type="text" class="form-control" readonly="readonly"  value="<?php echo $result['country']; ?>" name="country" placeholder="Enter Your Country Name"required>
+            <input type="text" value="<?php echo $result['name']; ?>" class="form-control" name="name" placeholder="Enter Your Name"required></br>
+            <input type="email" value="<?php echo $result['email']; ?>" readonly="readonly" class="form-control" name="email"  placeholder="Enter Your Email"required/> </br>         
+            <input type="number" value="<?php echo $result['mobile']; ?>" class="form-control" name="phone" placeholder="Enter Your Phone Number"required></br>
+            <input type="text" class="form-control" readonly="readonly"  value="<?php echo $result['country']; ?>" name="country" placeholder="Enter Your Country Name"required></br>
           </div>
         </div>
 
@@ -97,17 +87,17 @@ if(isset($savedata))
               <?php while ($restype = mysqli_fetch_array($sqltype,MYSQLI_ASSOC)):;?>
               <option value="<?php echo $restype["type"];?>"><?php echo $restype["type"];?></option>
               <?php endwhile; ?>
-            </select>
-            <input type="date" name="cdate" class="form-control" onkeydown="return false" required>
-            <input type="date" name="codate" class="form-control" onkeydown="return false" required>
-            <input type="submit"value="Next" id="toggleBtn"onClick="unhide()" class="btn btn-danger"required/>
+            </select></br>
+            <input type="date" name="cdate" class="form-control" onkeydown="return false" required></br>
+            <input type="date" name="codate" class="form-control" onkeydown="return false" required></br>
+            <input type="submit"value="Next" id="next-button" onclick="toggle()" class="btn btn-danger"required/></br>
           </div>
         </div>
       </form>
     </div>
     <div class="row">
       <!--Payment Form Starts Here-->
-      <form class="form-horizontal" method="post" id="payment-form">
+      <form class="form-horizontal" method="post" id="payment-form" style="display:none;">
         <h1>Payment Due: $</h1>
         <div class="col-sm-6">
           <div class="control-label col-sm-4">
@@ -135,7 +125,7 @@ if(isset($savedata))
             <input type="text" name="expmonth" class="form-control"required>
             <input type="text" name="expyear" class="form-control"required>
             <input type="number" name="cvv" class="form-control"required>
-            <input type="button"value="Back" class="btn btn-danger" required/>
+            <input type="button"value="Back"id="back-button" class="btn btn-danger" required/>
             <input type="submit"value="Proceed to Pay" name="savedata" class="btn btn-danger"required/>
           </div>
         </div>
@@ -148,3 +138,57 @@ include('Footer.php')
 ?>
 </body>
 </html>
+<script>
+$(document).ready(function() {
+  // Function to validate the booking form
+  function validateBookingForm() {
+      var isValid = true;
+
+      // Validate each field in the booking form
+      $('#booking-form input, #booking-form select').each(function() {
+          if ($(this).prop('required') && $(this).val() === '') {
+              isValid = false;
+          }
+      });
+
+      // Validate the checkout date
+      var checkInDate = new Date($('#booking-form input[name="cdate"]').val());
+      var checkOutDate = new Date($('#booking-form input[name="codate"]').val());
+
+      if (checkOutDate <= checkInDate) {
+          isValid = false;
+      }
+
+      return isValid;
+  }
+
+  // Function to toggle between booking form and payment form
+  function toggleForms() {
+      if (validateBookingForm()) {
+          // Disable input fields and select elements in the booking form
+          $('#booking-form input, #booking-form select').prop('readonly', true).prop('disabled', true);
+          //$('#booking-form').hide();
+          $('#payment-form').show();
+      } else {
+          alert('Please fill in all required fields and ensure the checkout date is after the check-in date.');
+      }
+  }
+
+  // Back button click event to go back to the booking form
+  $('#back-button').click(function() {
+      // Enable input fields and select elements in the booking form
+      $('#booking-form input, #booking-form select').prop('readonly', false).prop('disabled', false);
+      //$('#booking-form').show();
+      $('#payment-form').hide();
+  });
+
+  // Booking form submission event (you may need to adjust this based on your needs)
+  $('#booking-form').submit(function(event) {
+      event.preventDefault(); // Prevent the form from submitting
+      toggleForms(); // Proceed to payment form
+  });
+
+  // You can add additional validation for the payment form if needed
+
+});
+</script>
