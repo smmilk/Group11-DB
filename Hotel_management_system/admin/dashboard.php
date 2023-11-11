@@ -51,6 +51,7 @@ if($admin=="")
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
+            <li><a href="dashboard.php?option=statistics">Statistics</a></li>
             <li><a href="dashboard.php?option=update_password">Update Password</a></li>
             <li><a href="dashboard.php?option=feedback">Feedback</a></li>
             <li><a href="dashboard.php?option=rooms">Room</a></li>
@@ -102,6 +103,10 @@ else
   else if($opt=="admin_profile")
   {
     include('admin_profile.php');
+  }
+  else if($opt=="statistics")
+  {
+    include('statistics.php');
   }
 }
 ?>
