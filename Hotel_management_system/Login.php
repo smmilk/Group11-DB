@@ -63,8 +63,7 @@ include('Menu Bar.php')
                 <input type="Password" class="form-control"name="pass"placeholder="Password" autocomplete="off"required>
             </div>
           <input type="submit" value="Login" name="login" class="btn btn-primary btn-group btn-group-justified"required>
-          <div class="form-group forget">
-                <a href="Forgot account.php">Forget Account</a>&nbsp; <b>|</b>&nbsp; 
+          <div class="form-group forget"> 
                 <a href="Registation form.php">Create an Account</a>
             </div>
       	</form><br><br>
