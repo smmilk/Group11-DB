@@ -2,7 +2,7 @@
 session_start();
 error_reporting(1);
 include('connection.php');
-$eid=$_SESSION['create_account_logged_in'];
+$eid = $_SESSION['create_account_logged_in'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,65 +13,63 @@ $eid=$_SESSION['create_account_logged_in'];
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <link href="css/style.css"rel="stylesheet"/>
- <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body style="margin-top:50px;">
   <?php
   include('Menu Bar.php');
   ?>
-<div class="container-fluid"><!--Primary Id-->
-  <h1 class="text-center text-primary">Booking Details</h1><br>
-  <div class="container">
-    <div class="row">
-        <table class="table table-striped table-bordered table-hover table-responsive"style="height:150px;">
-               <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Mobile Number</th>
-                    <th>Address</th>
-                    <th>Country</th>
-                    <th>Room Type</th>
-                    <th>Check In Date</th>
-                    <th>Check In Time</th>
-                    <th>Check Out Date</th>
-                    <th>Occupancy</th>
-                    <th>Payment</th>
-                    <th>Cancel</th>
-                    <th>Feedback</th>
-               </tr>
+  <div class="container-fluid"><!--Primary Id-->
+    <h1 class="text-center text-primary">Booking Details</h1><br>
+    <div class="container">
+      <div class="row">
+        <table class="table table-striped table-bordered table-hover table-responsive" style="height:150px;">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile Number</th>
+            <th>Country</th>
+            <th>Room Type</th>
+            <th>Check In Date</th>
+            <th>Check Out Date</th>
+            <th>Payment Amt</th>
+            <th>Cancel</th>
+            <th>Feedback</th>
+          </tr>
 
-               <?php 
-$sql= mysqli_query($con,"select * from room_booking_details where email='$eid' "); 
-while($result=mysqli_fetch_assoc($sql))
-{
-$oid=$result['id'];
-$roomtype=$result['room_type'];
-echo "<tr>";
-echo "<td>".$result['name']."</td>";
-echo "<td>".$result['email']."</td>";
-echo "<td>".$result['phone']."</td>";
-echo "<td>".$result['address']."</td>";
-echo "<td>".$result['country']."</td>";
-echo "<td>".$result['room_type']."</td>";
-echo "<td>".$result['check_in_date']."</td>";
-echo "<td>".$result['check_in_time']."</td>";
-echo "<td>".$result['check_out_date']."</td>";
-echo "<td>".$result['Occupancy']."</td>";
-echo "<td><a href='cancel_order.php?order_id=$oid' style='color:Blue'>Receipt</a></td>";
-echo "<td><a href='cancel_order.php?order_id=$oid' style='color:Red'>Cancel</a></td>";
-echo "<td><a href='feedback.php?room_type=$roomtype' style='color:Green'>Rate your stay</a></td>";
-echo "</tr>";
-}                         
-               ?> 
-          </table>
+          <?php 
+          $query = "SELECT bd.id, acc.name, acc.email, acc.mobile, acc.country, r.type AS room_type, bd.check_in_date, bd.check_out_date, p.payment_amount
+                    FROM booking bd
+                    INNER JOIN Payment p ON bd.id = p.booking_id
+                    INNER JOIN Account acc ON bd.account_id = acc.account_id
+                    INNER JOIN Rooms r ON bd.room_id = r.room_id
+                    WHERE acc.email = '$eid'";
+          $result = mysqli_query($con, $query);
 
-    </div>
+          while ($row = mysqli_fetch_assoc($result)) {
+            echo "<tr>";
+            echo "<td>".$row['name']."</td>";
+            echo "<td>".$row['email']."</td>";
+            echo "<td>".$row['mobile']."</td>";
+            echo "<td>".$row['country']."</td>";
+            echo "<td>".$row['room_type']."</td>";
+            echo "<td>".$row['check_in_date']."</td>";
+            echo "<td>".$row['check_out_date']."</td>";
+            echo "<td>".$row['payment_amount']."</td>";
+            // Assuming the id column is used for booking_id in your cancel_order.php and feedback.php links
+            echo "<td><a href='cancel_order.php?order_id={$row['id']}' style='color:Red'>Cancel</a></td>";
+            echo "<td><a href='feedback.php?room_type={$row['room_type']}' style='color:Green'>Rate your stay</a></td>";
+            echo "</tr>";
+          }                         
+          ?> 
+        </table>
+      </div>
     </div>
   </div>
-<?php
-include('Footer.php')
-?>
+  <?php
+  include('Footer.php')
+  ?>
 </body>
 </html>

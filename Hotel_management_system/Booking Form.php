@@ -5,28 +5,52 @@ if($eid=="")
 {
 header('location:Login.php');
 }
-$sql= mysqli_query($con,"select * from Account where email='$eid' "); 
+$sql= mysqli_query($con,"select * from account where email='$eid' "); 
 $result=mysqli_fetch_assoc($sql);
 $sqltype=mysqli_query($con,"select * from rooms");
 //print_r($result);
 extract($_REQUEST);
 error_reporting(1);
-if(isset($savedata))
-{
-  $sql= mysqli_query($con,"select * from Booking where email='$email' and room_type='$room_type' ");
-  if(mysqli_num_rows($sql)) 
-  {
-  $msg= "<h1 style='color:red'>You have already booked this room</h1>";    
-  }
-  else
-  {
+if (isset($savedata)) {
+  // Validate check-in and check-out dates
+  $cdate_timestamp = strtotime($cdate);
+  $codate_timestamp = strtotime($codate);
 
-   $sql="insert into booking(account_id,room_id,check_in_date,check_out_date) 
-  values('','','$ctime','$codate')";
-   if(mysqli_query($con,$sql))
-   {
-   $msg= "<h1 style='color:blue'>You have Successfully booked this room</h1><h2><a href='order.php'>View </a></h2>"; 
-   }
+  if ($cdate_timestamp >= $codate_timestamp) {
+      $msg = "<h1 style='color:red'>Invalid date range: Check-in date must be before check-out date</h1>";
+  } else {
+      // Check availability
+      $roomid = mysqli_query($con, "SELECT room_id FROM rooms WHERE type='$room_type'");
+      $resroomid = mysqli_fetch_assoc($roomid);
+
+      $checkAvailabilityQuery = "SELECT COUNT(*) as count FROM booking 
+                           WHERE room_id='{$resroomid['room_id']}' 
+                             AND ('$ctime' BETWEEN check_in_date AND check_out_date
+                                  OR '$codate' BETWEEN check_in_date AND check_out_date
+                                  OR check_in_date BETWEEN '$ctime' AND '$codate'
+                                  OR check_out_date BETWEEN '$ctime' AND '$codate')";
+
+      $count_booked_rooms = mysqli_query($con, $checkAvailabilityQuery);
+      $count_result = mysqli_fetch_assoc($count_booked_rooms);
+
+      if ($count_result['count'] >= 3) {
+          $msg = "<h1 style='color:red'>Sorry, the selected room type is not available for the specified date range</h1>";
+      } else {
+          // Save data into the booking table
+          $sql = "INSERT INTO booking(account_id, room_id, check_in_date, check_out_date) 
+                  VALUES ('{$result['account_id']}', '{$resroomid['room_id']}', '$cdate', '$codate')";
+
+          if (mysqli_query($con, $sql)) {
+              // Get the ID of the last inserted booking
+              $booking_id = mysqli_insert_id($con);
+
+              // Redirect to Payment.php with the booking ID as a parameter
+              header("Location: Payment.php?booking_id=$booking_id");
+              exit(); // Ensure that no further code is executed after the redirect
+          } else {
+              $msg = "<h1 style='color:red'>Error saving booking data: " . mysqli_error($con) . "</h1>";
+          }
+      }
   }
 }
 ?>
@@ -90,43 +114,7 @@ if(isset($savedata))
             </select></br>
             <input type="date" name="cdate" class="form-control" onkeydown="return false" required></br>
             <input type="date" name="codate" class="form-control" onkeydown="return false" required></br>
-            <input type="submit"value="Next" id="next-button" onclick="toggle()" class="btn btn-danger"required/></br>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="row">
-      <!--Payment Form Starts Here-->
-      <form class="form-horizontal" method="post" id="payment-form" style="display:none;">
-        <h1>Payment Due: $</h1>
-        <div class="col-sm-6">
-          <div class="control-label col-sm-4">
-            <h4>Accepted Cards:</h4>
-            <h4>Name on Card:</h4>
-            <h4>Credit Card No.:</h4>
-          </div>
-          <div class="col-sm-8">
-            <i class="fa fa-cc-visa" style="color:navy;font-size:36px"></i>
-            <i class="fa fa-cc-amex" style="color:blue;font-size:36px"></i>
-            <i class="fa fa-cc-mastercard" style="color:red;font-size:36px"></i>
-            <i class="fa fa-cc-discover" style="font-size:36px"></i>
-            <input type="text" name="nameoncard" class="form-control"required>
-            <input type="number" name="ccnumber" class="form-control"required>
-          </div>
-        </div>
-
-        <div class="col-sm-6">
-          <div class="control-label col-sm-4">
-            <h4>Exp Month:</h4>
-            <h4>Exp Year:</h4>
-            <h4>CVV:</h4>
-          </div>
-          <div class="col-sm-8">  
-            <input type="text" name="expmonth" class="form-control"required>
-            <input type="text" name="expyear" class="form-control"required>
-            <input type="number" name="cvv" class="form-control"required>
-            <input type="button"value="Back"id="back-button" class="btn btn-danger" required/>
-            <input type="submit"value="Proceed to Pay" name="savedata" class="btn btn-danger"required/>
+            <input type="submit"value="Proceed to Payment"name="savedata" class="btn btn-danger"required/></br>
           </div>
         </div>
       </form>
@@ -137,58 +125,4 @@ if(isset($savedata))
 include('Footer.php')
 ?>
 </body>
-</html>
-<script>
-$(document).ready(function() {
-  // Function to validate the booking form
-  function validateBookingForm() {
-      var isValid = true;
-
-      // Validate each field in the booking form
-      $('#booking-form input, #booking-form select').each(function() {
-          if ($(this).prop('required') && $(this).val() === '') {
-              isValid = false;
-          }
-      });
-
-      // Validate the checkout date
-      var checkInDate = new Date($('#booking-form input[name="cdate"]').val());
-      var checkOutDate = new Date($('#booking-form input[name="codate"]').val());
-
-      if (checkOutDate <= checkInDate) {
-          isValid = false;
-      }
-
-      return isValid;
-  }
-
-  // Function to toggle between booking form and payment form
-  function toggleForms() {
-      if (validateBookingForm()) {
-          // Disable input fields and select elements in the booking form
-          $('#booking-form input, #booking-form select').prop('readonly', true).prop('disabled', true);
-          //$('#booking-form').hide();
-          $('#payment-form').show();
-      } else {
-          alert('Please fill in all required fields and ensure the checkout date is after the check-in date.');
-      }
-  }
-
-  // Back button click event to go back to the booking form
-  $('#back-button').click(function() {
-      // Enable input fields and select elements in the booking form
-      $('#booking-form input, #booking-form select').prop('readonly', false).prop('disabled', false);
-      //$('#booking-form').show();
-      $('#payment-form').hide();
-  });
-
-  // Booking form submission event (you may need to adjust this based on your needs)
-  $('#booking-form').submit(function(event) {
-      event.preventDefault(); // Prevent the form from submitting
-      toggleForms(); // Proceed to payment form
-  });
-
-  // You can add additional validation for the payment form if needed
-
-});
-</script>
+</html> 
