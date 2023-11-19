@@ -1,20 +1,22 @@
 <?php 
 include('Menu Bar.php');
 include('connection.php');
-if($eid=="")
-{
-header('location:Login.php');
+
+if($eid == "") {
+    header('location:Login.php');
 }
-$sql= mysqli_query($con,"select * from account where email='$eid' "); 
-$result=mysqli_fetch_assoc($sql);
-$sqltype=mysqli_query($con,"select * from rooms");
-//print_r($result);
+
+$sql = mysqli_query($con, "select * from account where email='$eid' "); 
+$result = mysqli_fetch_assoc($sql);
+$sqltype = mysqli_query($con, "select * from rooms");
+
 extract($_REQUEST);
 error_reporting(1);
+
 if (isset($savedata)) {
   // Validate check-in and check-out dates
-  $cdate_timestamp = strtotime($cdate);
-  $codate_timestamp = strtotime($codate);
+  $cdate_timestamp = strtotime(date('Y-m-d', strtotime($cdate)));
+  $codate_timestamp = strtotime(date('Y-m-d', strtotime($codate)));
 
   if ($cdate_timestamp >= $codate_timestamp) {
       $msg = "<h1 style='color:red'>Invalid date range: Check-in date must be before check-out date</h1>";
@@ -23,22 +25,46 @@ if (isset($savedata)) {
       $roomid = mysqli_query($con, "SELECT room_id FROM rooms WHERE type='$room_type'");
       $resroomid = mysqli_fetch_assoc($roomid);
 
-      $checkAvailabilityQuery = "SELECT COUNT(*) as count FROM booking 
-                           WHERE room_id='{$resroomid['room_id']}' 
-                             AND ('$ctime' BETWEEN check_in_date AND check_out_date
-                                  OR '$codate' BETWEEN check_in_date AND check_out_date
-                                  OR check_in_date BETWEEN '$ctime' AND '$codate'
-                                  OR check_out_date BETWEEN '$ctime' AND '$codate')";
+      // SQL query to check room availability
+      $checkAvailabilityQuery = "
+      SELECT
+          r.room_id,
+          r.type,
+          r.price,
+          r.details,
+          r.image,
+          r.quantity - COALESCE(b.quantity_booked, 0) AS available_quantity
+      FROM
+          Rooms r
+      LEFT JOIN (
+          SELECT
+              room_id,
+              COUNT(*) AS quantity_booked
+          FROM
+              Booking
+          WHERE
+              check_out_date > '$cdate' AND check_in_date < '$codate'
+          GROUP BY
+              room_id
+      ) b ON r.room_id = b.room_id
+      WHERE
+          r.type = '$room_type'
+      GROUP BY
+          r.room_id, r.type, r.price, r.details, r.image, r.quantity
+      HAVING
+          available_quantity > 0;
+      ";
 
-      $count_booked_rooms = mysqli_query($con, $checkAvailabilityQuery);
-      $count_result = mysqli_fetch_assoc($count_booked_rooms);
 
-      if ($count_result['count'] >= 3) {
+      $availabilityResult = mysqli_query($con, $checkAvailabilityQuery);
+      $availability = mysqli_fetch_assoc($availabilityResult);
+
+      if ($availability['available_quantity'] <= 0) {
           $msg = "<h1 style='color:red'>Sorry, the selected room type is not available for the specified date range</h1>";
       } else {
           // Save data into the booking table
           $sql = "INSERT INTO booking(account_id, room_id, check_in_date, check_out_date) 
-                  VALUES ('{$result['account_id']}', '{$resroomid['room_id']}', '$cdate', '$codate')";
+                  VALUES ('{$result['account_id']}', '{$availability['room_id']}', '$cdate', '$codate')";
 
           if (mysqli_query($con, $sql)) {
               // Get the ID of the last inserted booking

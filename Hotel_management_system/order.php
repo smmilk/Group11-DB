@@ -27,6 +27,7 @@ $eid = $_SESSION['create_account_logged_in'];
       <div class="row">
         <table class="table table-striped table-bordered table-hover table-responsive" style="height:150px;">
           <tr>
+            <th>Booking ID</th>
             <th>Name</th>
             <th>Email</th>
             <th>Mobile Number</th>
@@ -50,6 +51,7 @@ $eid = $_SESSION['create_account_logged_in'];
 
           while ($row = mysqli_fetch_assoc($result)) {
             echo "<tr>";
+            echo "<td>".$row['id']."</td>";
             echo "<td>".$row['name']."</td>";
             echo "<td>".$row['email']."</td>";
             echo "<td>".$row['mobile']."</td>";
@@ -60,7 +62,22 @@ $eid = $_SESSION['create_account_logged_in'];
             echo "<td>".$row['payment_amount']."</td>";
             // Assuming the id column is used for booking_id in your cancel_order.php and feedback.php links
             echo "<td><a href='cancel_order.php?order_id={$row['id']}' style='color:Red'>Cancel</a></td>";
-            echo "<td><a href='feedback.php?room_type={$row['room_type']}' style='color:Green'>Rate your stay</a></td>";
+            // Check if the current date is past the checkout date
+            $currentDate = date("Y-m-d");
+            if ($currentDate > $row['check_out_date']) {
+                // Check if feedback has already been provided
+                $feedbackLink = "<a href='feedback.php?room_type={$row['room_type']}' style='color:Green'>Rate your stay</a>";
+                $thankYouText = "Thank you!";
+                echo "<td>";
+                echo $feedbackLink;
+                echo "</td>";
+                //$feedbackStatus = getFeedbackStatus($con, $row['id']); // Assuming you have a function to check feedback status
+                //echo "<td>";
+                //echo ($feedbackStatus) ? $thankYouText : $feedbackLink;
+                //echo "</td>";
+            } else {
+                echo "<td></td>"; // Leave the column empty if it's not yet time for feedback
+            }
             echo "</tr>";
           }                         
           ?> 

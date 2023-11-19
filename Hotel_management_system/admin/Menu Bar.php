@@ -31,8 +31,9 @@ error_reporting(1);
         ?>
         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">View Status <span class="caret"></span></a>
         	<ul class="dropdown-menu">
-          		<li><a href="profile.php">Profile</a></li>
-              <li><a href="order.php">Booking Status</a></li>
+          		<li><a href="../profile.php">Profile</a></li>
+              <li><a href="../Booking Form.php">Booking Form</a></li>
+              <li><a href="../order.php">Booking Details</a></li>
               <li><a href="logout.php">Logout</a></li>
         	</ul>
         </li>
