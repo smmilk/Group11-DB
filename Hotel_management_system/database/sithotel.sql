@@ -62,7 +62,7 @@ INSERT INTO `Rooms` (`room_id`, `type`, `price`, `details`, `image`, `quantity`)
 --
 
 CREATE TABLE `Booking` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
   `account_id` INT NOT NULL,
   `room_id` INT NOT NULL,
   `check_in_date` DATE NOT NULL,

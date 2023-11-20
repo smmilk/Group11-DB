@@ -37,15 +37,15 @@ $res=mysqli_fetch_assoc($sql);
       <h2>Ratings & Feedback</h2>
         <?php
         // MySQL query to get a list of booking_id based on room_id
-        $bookingIdQuery = "SELECT id FROM Booking WHERE room_id = $room_id";
+        $bookingIdQuery = "SELECT booking_id FROM Booking WHERE room_id = $room_id";
         $bookingIdResult = mysqli_query($con, $bookingIdQuery);
 
         // Fetch feedback for each booking_id
         while ($bookingIdRow = mysqli_fetch_assoc($bookingIdResult)) {
-          $bookingId = $bookingIdRow['id'];
+          $bookingId = $bookingIdRow['booking_id'];
 
           // MongoDB query to get feedback for the specific booking_id
-          $feedbackQuery = ['booking_id' => "$bookingId"];
+          $feedbackQuery = ['feedback_id' => "$bookingId"];
           $feedbackData = $feedbackCollection->find($feedbackQuery);
 
           foreach ($feedbackData as $feedback) {

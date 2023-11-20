@@ -19,7 +19,7 @@ $oid=$res['id'];
 
 ?>
 <tr>
-		<td><?php echo $res['id']; ?></td>
+		<td><?php echo $res['booking_id']; ?></td>
 		<td><?php echo $res['account_id']; ?></td>
 		<td><?php echo $res['room_id']; ?></td>
 		<td><?php echo $res['check_in_date']; ?></td>

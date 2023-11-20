@@ -7,7 +7,7 @@ header('location:Login.php');
 }
 // Retrieve booking information from the database
 $booking_id = $_GET['booking_id'];
-$booking_query = mysqli_query($con, "SELECT * FROM booking WHERE id='$booking_id'");
+$booking_query = mysqli_query($con, "SELECT * FROM booking WHERE booking_id='$booking_id'");
 $booking_info = mysqli_fetch_assoc($booking_query);
 
 // Retrieve room information

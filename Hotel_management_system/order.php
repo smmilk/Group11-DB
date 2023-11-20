@@ -41,9 +41,9 @@ $eid = $_SESSION['create_account_logged_in'];
           </tr>
 
           <?php 
-          $query = "SELECT bd.id, acc.name, acc.email, acc.mobile, acc.country, r.type AS room_type, bd.check_in_date, bd.check_out_date, p.payment_amount
+          $query = "SELECT bd.booking_id, acc.name, acc.email, acc.mobile, acc.country, r.type AS room_type, bd.check_in_date, bd.check_out_date, p.payment_amount
                     FROM booking bd
-                    INNER JOIN Payment p ON bd.id = p.booking_id
+                    INNER JOIN Payment p ON bd.booking_id = p.booking_id
                     INNER JOIN Account acc ON bd.account_id = acc.account_id
                     INNER JOIN Rooms r ON bd.room_id = r.room_id
                     WHERE acc.email = '$eid'";
@@ -51,7 +51,7 @@ $eid = $_SESSION['create_account_logged_in'];
 
           while ($row = mysqli_fetch_assoc($result)) {
             echo "<tr>";
-            echo "<td>".$row['id']."</td>";
+            echo "<td>".$row['booking_id']."</td>";
             echo "<td>".$row['name']."</td>";
             echo "<td>".$row['email']."</td>";
             echo "<td>".$row['mobile']."</td>";
@@ -60,20 +60,27 @@ $eid = $_SESSION['create_account_logged_in'];
             echo "<td>".$row['check_in_date']."</td>";
             echo "<td>".$row['check_out_date']."</td>";
             echo "<td>".$row['payment_amount']."</td>";
-            // Assuming the id column is used for booking_id in your cancel_order.php and feedback.php links
-            echo "<td><a href='cancel_order.php?order_id={$row['id']}' style='color:Red'>Cancel</a></td>";
-            // Check if the current date is past the checkout date
+            // Check if the current date is before one day of the check-in date
             $currentDate = date("Y-m-d");
+            $cancelThreshold = date("Y-m-d", strtotime($row['check_in_date'] . " -1 day"));
+            if ($currentDate < $cancelThreshold) {
+                // Display "Cancel" link
+                echo "<td><a href='cancel_order.php?order_id={$row['booking_id']}' style='color:Red'>Cancel</a></td>";
+            } else {
+                // Display a message indicating it's too late to cancel
+                echo "<td><span style='color:Gray'>Cancellation Closed</span></td>";
+            }
+            // Check if the current date is past the checkout date
             if ($currentDate > $row['check_out_date']) {
               // Check if feedback has already been provided for the given booking ID
-              $existingFeedback = $feedbackCollection->findOne(['booking_id' => $row['id']]);
+              $existingFeedback = $feedbackCollection->findOne(['feedback_id' => $row['booking_id']]);
               if ($existingFeedback) {
                 echo "<td>";
                 echo "<label style='color:Green'>Done</label>";
                 echo "</td>";
               } else {
                 // Feedback not provided
-                $feedbackLink = "<a href='feedback.php?booking_id={$row['id']}' style='color:Green'>Rate your stay</a>";
+                $feedbackLink = "<a href='feedback.php?booking_id={$row['booking_id']}' style='color:Green'>Rate your stay</a>";
                 echo "<td>";
                 echo $feedbackLink;
                 echo "</td>";

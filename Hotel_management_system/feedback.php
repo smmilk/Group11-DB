@@ -23,8 +23,8 @@ $datetime->setTimezone($timezone);
 
 if (isset($savedata)) {
   $insertOneResult = $feedbackCollection->insertOne([
+    'feedback_id' => $bi,
     'guest_name' => $n,
-    'booking_id' => $bi,
     'feedback_text' => $comment,
     'rating' => $rate,
     'timestamp' => $datetime->format('D, d M Y H:i')
