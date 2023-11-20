@@ -65,16 +65,19 @@ $eid = $_SESSION['create_account_logged_in'];
             // Check if the current date is past the checkout date
             $currentDate = date("Y-m-d");
             if ($currentDate > $row['check_out_date']) {
-                // Check if feedback has already been provided
-                $feedbackLink = "<a href='feedback.php?room_type={$row['room_type']}' style='color:Green'>Rate your stay</a>";
-                $thankYouText = "Thank you!";
+              // Check if feedback has already been provided for the given booking ID
+              $existingFeedback = $feedbackCollection->findOne(['booking_id' => $row['id']]);
+              if ($existingFeedback) {
+                echo "<td>";
+                echo "<label style='color:Green'>Done</label>";
+                echo "</td>";
+              } else {
+                // Feedback not provided
+                $feedbackLink = "<a href='feedback.php?booking_id={$row['id']}' style='color:Green'>Rate your stay</a>";
                 echo "<td>";
                 echo $feedbackLink;
                 echo "</td>";
-                //$feedbackStatus = getFeedbackStatus($con, $row['id']); // Assuming you have a function to check feedback status
-                //echo "<td>";
-                //echo ($feedbackStatus) ? $thankYouText : $feedbackLink;
-                //echo "</td>";
+              }
             } else {
                 echo "<td></td>"; // Leave the column empty if it's not yet time for feedback
             }
