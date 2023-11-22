@@ -1,4 +1,15 @@
-
+<?php
+// Delete bookings without corresponding payments
+$deleteQuery = "
+    DELETE FROM booking
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM payment
+        WHERE payment.booking_id = booking.booking_id
+    )
+";
+mysqli_query($con, $deleteQuery);
+?>
 <table class="table table-bordered table-striped table-hover">
 	<h1>Room Booking Details</h1><hr>
 	<tr>

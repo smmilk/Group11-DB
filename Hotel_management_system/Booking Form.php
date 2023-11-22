@@ -6,6 +6,17 @@ if($eid == "") {
     header('location:Login.php');
 }
 
+// Delete bookings without corresponding payments
+$deleteQuery = "
+    DELETE FROM booking
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM payment
+        WHERE payment.booking_id = booking.booking_id
+    )
+";
+mysqli_query($con, $deleteQuery);
+
 $sql = mysqli_query($con, "select * from account where email='$eid' "); 
 $result = mysqli_fetch_assoc($sql);
 $sqltype = mysqli_query($con, "select * from rooms");
