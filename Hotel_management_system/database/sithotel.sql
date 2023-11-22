@@ -26,7 +26,10 @@ CREATE TABLE `Account` (
 --
 
 INSERT INTO `Account` (`account_id`, `name`, `email`, `password`, `mobile`, `gender`, `country`) VALUES
-(1, 'admin', 'admin@gmail.com', 'admin', 91234567, 'male', 'Singapore');
+(1, 'admin', 'admin@gmail.com', 'admin', 91234567, 'male', 'Singapore'),
+(2, 'John Doe', 'john.doe@example.com', 'password123', 98765432, 'male', 'Malaysia'),
+(3, 'Jane Smith', 'jane.smith@example.com', 'securepass', 87654321, 'female', 'China'),
+(4, 'Chris Johnson', 'chris.johnson@example.com', 'pass123', 76543210, 'male', 'India');
 
 -- --------------------------------------------------------
 
@@ -72,6 +75,19 @@ CREATE TABLE `Booking` (
   FOREIGN KEY (room_id) REFERENCES Rooms(room_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
+--
+-- Dumping data for table `Booking`
+--
+
+INSERT INTO `Booking` (`account_id`, `room_id`, `check_in_date`, `check_out_date`) VALUES
+(4, 2, '2023-06-15', '2023-06-20'),
+(2, 4, '2023-07-10', '2023-07-15'),
+(3, 1, '2023-08-05', '2023-08-10'),
+(4, 5, '2023-09-01', '2023-09-05'),
+(2, 3, '2023-09-15', '2023-09-20'),
+(3, 6, '2023-10-10', '2023-10-15'),
+(2, 5, '2023-10-10', '2023-10-19');
+
 -- --------------------------------------------------------
 
 --
@@ -85,3 +101,16 @@ CREATE TABLE `Payment` (
   PRIMARY KEY (booking_id),
   FOREIGN KEY (booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `Payment`
+--
+
+INSERT INTO `Payment` (`booking_id`, `payment_date`, `payment_amount`) VALUES
+(1, '2023-06-18', 300),
+(2, '2023-07-12', 400),
+(3, '2023-08-07', 250),
+(4, '2023-09-03', 360),
+(5, '2023-09-17', 350),
+(6, '2023-10-12', 500),
+(7, '2023-10-04', 810);
