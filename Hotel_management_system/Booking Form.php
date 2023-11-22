@@ -112,11 +112,11 @@ if (isset($savedata)) {
       <!--Booking Form Starts Here-->
       <form class="form-horizontal" method="post" id="booking-form">
         <div class="col-sm-6">
-          <div class="control-label col-sm-4">
-            <h4>Name:</h4>
-            <h4>Email:</h4>
-            <h4>Mobile:</h4>
-            <h4>Country:</h4>
+          <div class="col-sm-4">
+            <h4>Name:</h4></br>
+            <h4>Email:</h4></br>
+            <h4>Mobile:</h4></br>
+            <h4>Country:</h4></br>
           </div>
           <div class="col-sm-8">
             <input type="text" value="<?php echo $result['name']; ?>" class="form-control" name="name" placeholder="Enter Your Name"required></br>
@@ -127,10 +127,10 @@ if (isset($savedata)) {
         </div>
 
         <div class="col-sm-6">
-          <div class="control-label col-sm-4">
-            <h4>Room Type:</h4>
-            <h4>Check In Date:</h4>
-            <h4>Check Out Date:</h4>
+          <div class="col-sm-4">
+            <h4>Room Type:</h4></br>
+            <h4>Check In Date:</h4></br>
+            <h4>Check Out Date:</h4></br>
           </div>
           <div class="col-sm-8">
             <select class="form-control" name="room_type"required>
