@@ -83,5 +83,5 @@ CREATE TABLE `Payment` (
   `payment_date` DATE NOT NULL,
   `payment_amount` DECIMAL(10, 2) NOT NULL,
   PRIMARY KEY (booking_id),
-  FOREIGN KEY (booking_id) REFERENCES Booking(id) ON DELETE CASCADE
+  FOREIGN KEY (booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
